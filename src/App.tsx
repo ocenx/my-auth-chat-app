@@ -1,31 +1,21 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import { AuthProvider } from "./contexts/AuthContext";
-import ProtectedRoute from "./routes/ProtectedRoute";
-
-import Profile from "./pages/Profile";
-import Chat from "./pages/Chat";
-import Todo from "./pages/Todo"; // ✅ Import To-Do List
+import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Welcome from "./pages/Welcome";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Navbar />
         <Routes>
-          {/* Public routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-
-          {/* Protected routes */}
           <Route
-            path="/"
+            path="/profile"
             element={
               <ProtectedRoute>
                 <Profile />
@@ -33,32 +23,16 @@ const App: React.FC = () => {
             }
           />
           <Route
-            path="/dashboard"
+            path="/welcome"
             element={
               <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <Chat />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/todo" // ✅ Added To-Do List route
-            element={
-              <ProtectedRoute>
-                <Todo />
+                <Welcome />
               </ProtectedRoute>
             }
           />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

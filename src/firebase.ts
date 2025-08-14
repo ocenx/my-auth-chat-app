@@ -5,24 +5,24 @@ import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com", // Needed for Realtime DB
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL, // ✅ Added for RTDB
 };
 
-// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// ✅ Auth & Google Provider
+// Auth & Google Sign-In
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider(); // <-- THIS fixes your error
+export const googleProvider = new GoogleAuthProvider();
 
-// ✅ Firestore
+// Firestore
 export const db = getFirestore(app);
 
-// ✅ Realtime Database
+// Realtime Database
 export const rtdb = getDatabase(app);

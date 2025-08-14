@@ -1,18 +1,15 @@
-// src/pages/Profile.tsx
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 const Profile: React.FC = () => {
   const { currentUser, updateUserProfile } = useAuth();
   const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
-  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL || "");
+  const [file, setFile] = useState<File | null>(null);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      // ✅ Pass BOTH arguments to avoid TypeScript error
-      await updateUserProfile(displayName, photoURL);
+      await updateUserProfile(displayName, file);
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -20,9 +17,7 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (!currentUser) {
-    return <div>Please log in to view your profile.</div>;
-  }
+  if (!currentUser) return <div>Please log in to view your profile.</div>;
 
   return (
     <div className="max-w-md mx-auto p-4">
@@ -38,11 +33,11 @@ const Profile: React.FC = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Photo URL</label>
+          <label className="block text-sm font-medium">Profile Picture</label>
           <input
-            type="text"
-            value={photoURL}
-            onChange={(e) => setPhotoURL(e.target.value)}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="w-full border px-3 py-2 rounded"
           />
         </div>

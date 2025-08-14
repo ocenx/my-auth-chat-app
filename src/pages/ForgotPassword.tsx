@@ -5,45 +5,37 @@ import { Link } from "react-router-dom";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
-    setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage("Password reset email sent! Check your inbox.");
-    } catch (err: any) {
-      setError(err.message);
+      alert("Password reset email sent");
+    } catch (err) {
+      alert("Error: " + (err as Error).message);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 border rounded">
-      <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-      {message && <p className="text-green-500 mb-2">{message}</p>}
+    <div className="max-w-md mx-auto mt-10 p-4 border rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">Forgot Password</h1>
       <form onSubmit={handleReset} className="space-y-4">
         <input
           type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
+          placeholder="Enter your email"
+          className="w-full border px-3 py-2 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
-        <button disabled={loading} type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
-          {loading ? "Sending..." : "Send Reset Email"}
+        <button type="submit" className="bg-yellow-500 text-white px-4 py-2 rounded w-full">
+          Send Reset Link
         </button>
       </form>
-      <div className="mt-2 text-sm">
-        <Link to="/login" className="text-blue-500">Back to Login</Link>
-      </div>
+      <p className="mt-4 text-sm">
+        <Link to="/login" className="text-blue-500 hover:underline">
+          Back to Login
+        </Link>
+      </p>
     </div>
   );
 };
