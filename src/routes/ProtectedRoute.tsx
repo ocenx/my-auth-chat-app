@@ -10,12 +10,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { currentUser, loading } = useAuth();
 
-  // ⏳ Show a loading indicator until we know if the user is logged in
   if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return <div>Loading...</div>; // You can replace this with a spinner UI
   }
 
-  // 🚫 Redirect to login if not logged in
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
