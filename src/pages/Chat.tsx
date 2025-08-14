@@ -32,18 +32,22 @@ const Chat: React.FC = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !currentUser) return; // ✅ Now checks if logged in
 
     await addDoc(collection(db, "messages"), {
       text: newMessage,
       createdAt: serverTimestamp(),
-      uid: currentUser?.uid,
-      displayName: currentUser?.displayName || "Anonymous",
-      photoURL: currentUser?.photoURL || "",
+      uid: currentUser.uid,
+      displayName: currentUser.displayName || "Anonymous",
+      photoURL: currentUser.photoURL || "",
     });
 
     setNewMessage("");
   };
+
+  if (!currentUser) {
+    return <div className="p-4">Please log in to join the chat.</div>;
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-4">
