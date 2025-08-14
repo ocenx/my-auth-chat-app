@@ -5,44 +5,47 @@ const Profile: React.FC = () => {
   const { currentUser, updateUserProfile } = useAuth();
   const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await updateUserProfile(displayName, file);
-      alert("Profile updated successfully!");
+      alert("Profile updated!");
     } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Failed to update profile");
+      console.error(error);
+      alert("Error updating profile");
     }
+    setLoading(false);
   };
 
-  if (!currentUser) return <div>Please log in to view your profile.</div>;
-
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
-      <form onSubmit={handleUpdateProfile} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Display Name</label>
-          <input
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Profile Picture</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Save
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+      <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
+      <form onSubmit={handleSubmit}>
+        <label className="block mb-2">Display Name:</label>
+        <input
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          className="border p-2 w-full mb-4"
+        />
+
+        <label className="block mb-2">Profile Picture:</label>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+          accept="image/*"
+          className="mb-4"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 text-white p-2 rounded w-full"
+        >
+          {loading ? "Updating..." : "Update Profile"}
         </button>
       </form>
     </div>

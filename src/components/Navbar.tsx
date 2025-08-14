@@ -5,19 +5,21 @@ import { useAuth } from "../contexts/AuthContext";
 const Navbar: React.FC = () => {
   const { currentUser, logout } = useAuth();
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   return (
-    <nav className="bg-gray-800 p-4 text-white flex justify-between">
-      <Link to="/" className="font-bold">My App</Link>
+    <nav className="bg-blue-500 p-4 text-white flex justify-between">
+      <div className="flex gap-4">
+        {currentUser && (
+          <>
+            <Link to="/">Welcome</Link>
+            <Link to="/todolist">Todo List</Link>
+            <Link to="/chat">Chat</Link>
+            <Link to="/profile">Profile</Link>
+          </>
+        )}
+      </div>
       <div>
         {currentUser ? (
-          <>
-            <Link to="/profile" className="mr-4">Profile</Link>
-            <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded">Logout</button>
-          </>
+          <button onClick={logout}>Logout</button>
         ) : (
           <Link to="/login">Login</Link>
         )}

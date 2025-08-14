@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (currentUser) {
       await updateProfile(currentUser, { displayName, photoURL });
-      setCurrentUser({ ...currentUser, displayName, photoURL });
+      setCurrentUser({ ...currentUser, displayName, photoURL } as User);
     }
   };
 
@@ -66,7 +66,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, loading, setCurrentUser, updateUserProfile, logout }}>
+    <AuthContext.Provider
+      value={{ currentUser, loading, setCurrentUser, updateUserProfile, logout }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );
