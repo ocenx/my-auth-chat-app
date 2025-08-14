@@ -22,6 +22,9 @@ const Navbar: React.FC = () => {
         <Link to="/chat" className="hover:underline">
           Chat
         </Link>
+        <Link to="/todo" className="hover:underline"> {/* ✅ Added To-Do link */}
+          To-Do
+        </Link>
       </div>
       <div className="flex items-center gap-3">
         {currentUser.photoURL && (

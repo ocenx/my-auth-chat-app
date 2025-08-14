@@ -1,6 +1,8 @@
+// src/firebase.ts
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database"; // ✅ Import Realtime DB
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,6 +15,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore(app); // ✅ Firestore export
+export const firestore = getFirestore(app);
+export const database = getDatabase(app); // ✅ Export Realtime DB instance
+export const db = getDatabase(app);
