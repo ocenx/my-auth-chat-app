@@ -1,85 +1,74 @@
+// src/pages/Profile.tsx
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 const Profile: React.FC = () => {
   const { currentUser, updateUserProfile } = useAuth();
   const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL || "");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Cloudinary config
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setPhotoFile(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
+    if (!currentUser) return;
+
     setLoading(true);
+    setMessage("");
 
     try {
-      let photoURL = currentUser?.photoURL || null;
-
-      // If new file selected, upload to Cloudinary
-      if (photoFile) {
-        const formData = new FormData();
-        formData.append("file", photoFile);
-        formData.append("upload_preset", uploadPreset);
-
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) throw new Error("Cloudinary upload failed");
-
-        const data = await res.json();
-        photoURL = data.secure_url;
-      }
-
-      // Update profile in Firebase Auth
+      // ✅ Call with two separate arguments
       await updateUserProfile(displayName, photoURL);
       setMessage("Profile updated successfully!");
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (error) {
+      setMessage("Failed to update profile. Please try again.");
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!currentUser) {
+    return <div className="text-center mt-10">You must be logged in to view this page.</div>;
+  }
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Update Profile</h2>
-      {message && <p className="mb-4 text-green-600">{message}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-4">Profile</h2>
+
+      {message && <div className="mb-4 text-green-600">{message}</div>}
+
+      <form onSubmit={handleUpdate} className="space-y-4">
         <div>
-          <label className="block mb-1">Display Name</label>
+          <label className="block font-semibold mb-1">Display Name</label>
           <input
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
+
         <div>
-          <label className="block mb-1">Profile Photo</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <label className="block font-semibold mb-1">Photo URL</label>
+          <input
+            type="text"
+            value={photoURL}
+            onChange={(e) => setPhotoURL(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
-        {currentUser?.photoURL && (
-          <div className="mt-2">
+
+        {photoURL && (
+          <div className="flex justify-center">
             <img
-              src={currentUser.photoURL}
-              alt="Profile"
-              className="w-20 h-20 rounded-full object-cover"
+              src={photoURL}
+              alt="Profile Preview"
+              className="w-24 h-24 rounded-full object-cover border"
             />
           </div>
         )}
+
         <button
           type="submit"
           disabled={loading}
