@@ -10,6 +10,7 @@ import Welcome from "./pages/Welcome";
 import Profile from "./pages/Profile";
 import TodoList from "./pages/Todo";
 import Chat from "./pages/Chat";
+import MyFiles from "./pages/MyFiles"; // ✅ New page for file upload/download
 import Navbar from "./components/Navbar";
 
 const App: React.FC = () => {
@@ -53,6 +54,15 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Chat />
+              </ProtectedRoute>
+            }
+          />
+          {/* ✅ New File Upload/Download Page */}
+          <Route
+            path="/my-files"
+            element={
+              <ProtectedRoute>
+                <MyFiles />
               </ProtectedRoute>
             }
           />

@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage"; // ✅ Added for file uploads
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,7 +13,7 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL, // ✅ Added for RTDB
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL, // ✅ RTDB
 };
 
 const app = initializeApp(firebaseConfig);
@@ -26,3 +27,6 @@ export const db = getFirestore(app);
 
 // Realtime Database
 export const rtdb = getDatabase(app);
+
+// ✅ Storage (for file uploads/downloads)
+export const storage = getStorage(app);

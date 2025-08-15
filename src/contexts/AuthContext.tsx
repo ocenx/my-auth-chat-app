@@ -1,3 +1,4 @@
+// src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { onAuthStateChanged, updateProfile, signOut, User } from "firebase/auth";
 import { auth } from "../firebase";
@@ -15,7 +16,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   setCurrentUser: () => {},
   updateUserProfile: async () => {},
-  logout: async () => {}
+  logout: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -33,30 +34,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const updateUserProfile = async (displayName: string, file?: File | null) => {
-    let photoURL = currentUser?.photoURL || "";
+    try {
+      let photoURL = currentUser?.photoURL || "";
 
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-        method: "POST",
-        body: formData
-      });
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+          method: "POST",
+          body: formData,
+        });
 
-      const data = await res.json();
-      if (data.secure_url) {
-        photoURL = data.secure_url;
-      } else {
-        throw new Error("Cloudinary upload failed");
+        const data = await res.json();
+        if (data.secure_url) {
+          photoURL = data.secure_url;
+        } else {
+          throw new Error(data.error?.message || "Cloudinary upload failed");
+        }
       }
-    }
 
-    if (currentUser) {
-      await updateProfile(currentUser, { displayName, photoURL });
-      setCurrentUser({ ...currentUser, displayName, photoURL } as User);
+      if (currentUser) {
+        await updateProfile(currentUser, { displayName, photoURL });
+        setCurrentUser({ ...currentUser, displayName, photoURL });
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      throw err;
     }
   };
 

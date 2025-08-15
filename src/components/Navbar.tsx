@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
             <Link to="/todolist">Todo List</Link>
             <Link to="/chat">Chat</Link>
             <Link to="/profile">Profile</Link>
+            <Link to="/my-files">My Files</Link>
           </>
         )}
       </div>
